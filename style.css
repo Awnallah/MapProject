@@ -1,0 +1,16 @@
+html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      #map {
+        height: 100%;
+        width: 75%;
+        float: right;
+      }
+      #list, #formSearch {
+        will-change:transform;
+        float: left;
+        width: 25%;
+      }

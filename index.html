@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Neighborhood Map</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwKDUFHFfvYk-tZXMdmL0JuOsfbUY94aY&libraries=places"
+         ></script>
+
+
+
+
+</head>
+
+<body>
+
+        <div id='map'></div>
+        <div class='mobile'>
+            <form id='formSearch'>
+                <input id='inputSearch' placeholder='search'>
+                <button type='submit' id='submitSearch'>Submit</button>
+                <h4 id="search-status"></h4>
+            </form>
+
+
+                <ul id='list' data-bind='foreach: {data: meetupList(), as: "meetup"}'>
+                    <li data-bind='text: meetup.name, click: $root.meetupClicked'></li>
+                </ul>
+
+
+        </div>
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js'></script>
+    <script type="text/javascript" src='app.js'></script>
+
+
+
+
+</body>
+</html>
