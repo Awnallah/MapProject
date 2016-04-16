@@ -1,6 +1,9 @@
 //custom meetup url search with api key
 var url = 'https://api.meetup.com/2/open_events?and_text=False&offset=0&format=json&lon=-122.25851&limited_events=False&photo-host=public&text=runing+run+jogging+hiking&page=20&radius=15&category=9&lat=37.806349&status=upcoming&desc=False&sig_id=185474821&sig=774927aef4ea1cb19313b3f41dde24adc6966d05';
 
+var newurl ='https://api.meetup.com/2/open_events?&photo-host=public&text=jog+run+hike&category=9&page=20&status=upcoming&desc=False&key=92473e3d65402c53a67252350&&sign=true&country=US&&radius=15&order=distance&key=92473e3d65402c53a67252350'
+
+var weatherApi = 'http://openweathermap.org/appid';
 
 //Meetup Class takes meetup api data and forms custom objects for each meetup event
 var Meetup = function(meetObj) {
@@ -22,6 +25,7 @@ var Meetup = function(meetObj) {
             lat: self.lat,
             lng: self.lng
         },
+        icon: 'icon.png',
         title: self.name()
     });
     self.infoWindow = new google.maps.InfoWindow();
@@ -35,14 +39,23 @@ var ViewModel = function() {
     //map variable will be instantiated from Map class and is used for all markers
     var map;
 
-
+    self.searchValue = ko.observable("Berkeley, CA");
 
 
     // var infoWindow = new google.maps.InfoWindow();
     self.meetupList = ko.observableArray([]);
 
+    self.cleanUpList = function(){
+        self.meetupList().forEach(function(meetup){
+            meetup.marker.setMap(null);
+        });
+        self.meetupList([]);
+    }
+
 
     self.getMeetups = function(url) {
+        //clearing up meetupList array when a new search is requested
+        self.cleanUpList();
 
         // requesting JSONP
         $.ajax({
@@ -141,6 +154,24 @@ var ViewModel = function() {
             disableDoubleClickZoom: false
         });
 
+        var input = document.getElementById('inputSearch');
+        var searchBox = new google.maps.places.SearchBox(input);
+
+        searchBox.addListener('places_changed', function() {
+
+            var places = searchBox.getPlaces();
+            var lat = places[0].geometry.location.lat();
+            var lng = places[0].geometry.location.lng();
+
+
+           console.log(lat, lng);
+           map.setCenter({lat: lat , lng: lng});
+
+           self.getMeetups(newurl + '&lat=' + lat + '&lon=' +lng)
+
+        });
+
+
     }
 
 
@@ -148,8 +179,6 @@ var ViewModel = function() {
 
     self.initMap();
     self.getMeetups(url);
-
-
 
 
 }

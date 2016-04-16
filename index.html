@@ -19,7 +19,7 @@
         <div id='map'></div>
         <div class='mobile'>
             <form id='formSearch'>
-                <input id='inputSearch' placeholder='search'>
+                <input data-bind="value: searchValue" id='inputSearch' class="controls" type="search" placeholder='search'>
                 <button type='submit' id='submitSearch'>Submit</button>
                 <h4 id="search-status"></h4>
             </form>
