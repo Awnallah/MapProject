@@ -1,15 +1,17 @@
 //custom meetup url search with api key
 var url = 'https://api.meetup.com/2/open_events?and_text=False&offset=0&format=json&lon=-122.25851&limited_events=False&photo-host=public&text=runing+run+jogging+hiking&page=20&radius=15&category=9&lat=37.806349&status=upcoming&desc=False&sig_id=185474821&sig=774927aef4ea1cb19313b3f41dde24adc6966d05';
 
-var newurl ='https://api.meetup.com/2/open_events?&photo-host=public&text=jog+run+hike&category=9&page=20&status=upcoming&desc=False&key=92473e3d65402c53a67252350&&sign=true&country=US&&radius=15&order=distance&key=92473e3d65402c53a67252350'
+var newurl ='https://api.meetup.com/2/open_events?&photo-host=public&text=jog+run+hike&category=9&page=20&status=upcoming&desc=False&key=92473e3d65402c53a67252350&&sign=true&country=US&&radius=15&order=distance&key=92473e3d65402c53a67252350';
 
-var weatherApi = 'http://openweathermap.org/appid';
+var weatherApi = 'https://api.forecast.io/forecast/d5bb4142f6d7be37a8aa855e52dd0f31/';
+var forecastapi = 'https://api.forecast.io/forecast/d5bb4142f6d7be37a8aa855e52dd0f31/37.806112,-122.258038,1460912400';
 
 //Meetup Class takes meetup api data and forms custom objects for each meetup event
 var Meetup = function(meetObj) {
     var self = this;
     self.url = ko.observable(meetObj.event_url);
     self.name = ko.observable(meetObj.name);
+    self.time = ko.observable(meetObj.time);
     self.date = ko.computed(function() {
         return new Date(meetObj.time)
     });
@@ -36,6 +38,7 @@ var Meetup = function(meetObj) {
 //Kockout framework
 var ViewModel = function() {
     var self = this;
+    var weatherStatus;
     //map variable will be instantiated from Map class and is used for all markers
     var map;
 
@@ -116,6 +119,8 @@ var ViewModel = function() {
             meetup.infoWindow.close();
         })
 
+        self.weatherRequest(meetup);
+
         meetup.infoWindow.setContent('<div' +
             '<h5><a href="' +
             meetup.url() + '" target="_blank">' + meetup.name() +
@@ -123,12 +128,43 @@ var ViewModel = function() {
             '<p>' +
             meetup.address() + ', ' + meetup.city() + ' </br> Time: ' + meetup.date() +
             '</p>' +
+            '<p>' + weatherStatus.summary + '; ' + weatherStatus.icon + '</p>' +
             '</div>'
         );
+
+        console.log(meetup.time());
+        console.log(meetup.date());
+
 
 
         meetup.infoWindow.open(map, meetup.marker);
 
+
+    }
+
+    self.weatherRequest = function(meetup){
+
+        var weatherApiLocal = weatherApi + meetup.lat +
+                                ',' + meetup.lng + ',' + (meetup.time()/1000) ;
+
+                                console.log(weatherApiLocal);
+
+        $.ajax({
+            url: weatherApiLocal,
+            dataType: 'jsonp',
+            success: function(weatherData){
+
+                var forecastdata = weatherData.currently;
+                console.log(forecastdata);
+                weatherStatus = forecastdata;
+
+
+            },
+            error: function(weatherData){
+                weatherStatus.summary = 'weather forecast is not available yet';
+                weatherStatus.icon = '';
+            }
+        });
 
     }
 
