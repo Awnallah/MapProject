@@ -134,7 +134,7 @@ var ViewModel = function() {
             '<p>' +
             meetup.address + ', ' + meetup.city + ' </br> Time: ' + meetup.date() +
             '</p>' +
-             '<p>' + meetup.weather().summary + '</p>' +
+             '<p> Expected Weather: <i>' + meetup.weather().summary + '</i></p>' +
             '</div>'
         );
 

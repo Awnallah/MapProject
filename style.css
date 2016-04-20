@@ -44,8 +44,12 @@ html, body {
     border-color: grey;
     border-style: ridge;
     background-color: grey;
-
     width: 280px;
+
+}
+
+.list-item:hover{
+  font-weight: bold;
 
 }
 
