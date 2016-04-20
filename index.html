@@ -17,20 +17,28 @@
 <body>
 
         <div id='map'></div>
-        <div class='mobile'>
-            <form id='formSearch'>
-                <input data-bind="value: searchValue" id='inputSearch' class="controls" type="search" placeholder='search'>
-                <button type='submit' id='submitSearch'>Submit</button>
-                <h4 id="search-status"></h4>
+        <div class='container-search input-group input-group-addon'>
+             <form id='formSearch' class='form-inline input-group ' role ='form'>
+                <div class=""> Location
+                    <input data-bind="value: searchValue" name='search' id='inputSearch' class="controls" type="search" placeholder='Location'>
+                    <button type="button" ><span class="glyphicon glyphicon-search"></span></button>
+                </div>
             </form>
-
-
-                <ul id='list' data-bind='foreach: {data: meetupList(), as: "meetup"}'>
-                    <li data-bind='text: meetup.name, click: $root.meetupClicked'></li>
-                </ul>
-
-
+            <div ><span data-bind='text: meetupList().length'></span> Events</div>
         </div>
+
+        <div class="meetup-list">
+            <ul id='list' class="list list-group" data-bind='foreach: {data: meetupList(), as: "meetup"}'>
+                <li class="list-item list-group-item" data-bind='text: meetup.name, click: $root.meetupClicked'></li>
+            </ul>
+
+            <div class="info-box">Your Wheather</div>
+        </div>
+
+
+
+
+
 
 
 

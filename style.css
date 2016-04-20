@@ -2,15 +2,56 @@ html, body {
         height: 100%;
         margin: 0;
         padding: 0;
+        overflow-x: hidden;
       }
 
-      #map {
-        height: 100%;
-        width: 75%;
-        float: right;
-      }
-      #list, #formSearch {
-        will-change:transform;
-        float: left;
-        width: 25%;
-      }
+#map {
+  height: 100%;
+  width: 100%;
+}
+
+.container-search {
+  width: auto;
+  position: absolute;
+  z-index: 100;
+  top: 5px;
+  padding: 0 5px;
+
+}
+
+.meetup-list { 
+  color: white;
+  width: 300px;
+  position: absolute;
+  z-index: 100;
+  top: 0;
+  right: 0;
+  padding: 0 5px;
+/*  background-color: rgba(0,0,0,0.5);*/
+}
+
+.list {
+    list-style-type: none;
+    width: 300px;
+    padding: 0;
+    overflow: scroll;
+    overflow-x: hidden;
+    height: 500px;
+    
+}
+
+.list-item{
+
+    border-color: grey;
+    border-style: ridge;
+    background-color: grey;
+    
+    width: 280px;
+    
+}
+
+.controls .input-group-description {
+  display: inline-block;
+}
+
+

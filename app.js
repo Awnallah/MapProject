@@ -4,12 +4,11 @@ var url = 'https://api.meetup.com/2/open_events?and_text=False&offset=0&format=j
 var newurl ='https://api.meetup.com/2/open_events?&photo-host=public&text=jog+run+hike&category=9&page=20&status=upcoming&desc=False&key=92473e3d65402c53a67252350&&sign=true&country=US&&radius=15&order=distance&key=92473e3d65402c53a67252350';
 
 var weatherApi = 'https://api.forecast.io/forecast/d5bb4142f6d7be37a8aa855e52dd0f31/';
-var forecastapi = 'https://api.forecast.io/forecast/d5bb4142f6d7be37a8aa855e52dd0f31/37.806112,-122.258038,1460912400';
 
 //Meetup Class takes meetup api data and forms custom objects for each meetup event
 var Meetup = function(meetObj) {
     var self = this;
-    self.url = ko.observable(meetObj.event_url);
+    self.url = meetObj.event_url;
     self.name = ko.observable(meetObj.name);
     self.time = ko.observable(meetObj.time);
     self.date = ko.computed(function() {
@@ -31,14 +30,17 @@ var Meetup = function(meetObj) {
         title: self.name()
     });
     self.infoWindow = new google.maps.InfoWindow();
+    self.weather = ko.observable();
 
 };
+
+
 
 
 //Kockout framework
 var ViewModel = function() {
     var self = this;
-    var weatherStatus;
+
     //map variable will be instantiated from Map class and is used for all markers
     var map;
 
@@ -90,6 +92,7 @@ var ViewModel = function() {
             for (var i = 0; i < self.meetupList().length; i++) {
                 //set each marker on map
                 self.meetupList()[i].marker.setMap(map);
+                self.weatherRequest(self.meetupList()[i]);
 
                 //IFFE: adds a listener to each marker, so when a marker is clicked, the
                 //function self.meetupClicked is invoked
@@ -97,6 +100,7 @@ var ViewModel = function() {
 
                     self.meetupList()[j].marker.addListener('click', function() {
                         self.meetupClicked(self.meetupList()[j]);
+                        // self.toggleBounce(self.meetupList()[j]);
                     });
                 }(i))
 
@@ -117,30 +121,26 @@ var ViewModel = function() {
         //closes any open infoWidow to avoid multiple ones open simultaneously
         self.meetupList().forEach(function(meetup) {
             meetup.infoWindow.close();
+            meetup.marker.setAnimation(null);
         })
 
-        self.weatherRequest(meetup);
+        meetup.marker.setAnimation(google.maps.Animation.BOUNCE);
+
 
         meetup.infoWindow.setContent('<div' +
             '<h5><a href="' +
-            meetup.url() + '" target="_blank">' + meetup.name() +
+            meetup.url + '" target="_blank">' + meetup.name() +
             '</a> </h5>' +
             '<p>' +
             meetup.address() + ', ' + meetup.city() + ' </br> Time: ' + meetup.date() +
             '</p>' +
-            '<p>' + weatherStatus.summary + '; ' + weatherStatus.icon + '</p>' +
+             '<p>' + meetup.weather().summary + '; ' + '</p>' +
             '</div>'
         );
 
-        console.log(meetup.time());
-        console.log(meetup.date());
-
-
-
         meetup.infoWindow.open(map, meetup.marker);
-
-
     }
+
 
     self.weatherRequest = function(meetup){
 
@@ -155,8 +155,9 @@ var ViewModel = function() {
             success: function(weatherData){
 
                 var forecastdata = weatherData.currently;
-                console.log(forecastdata);
-                weatherStatus = forecastdata;
+
+                meetup.weather(forecastdata);
+                console.log(meetup.weather());
 
 
             },
