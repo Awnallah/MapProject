@@ -9,17 +9,17 @@ var weatherApi = 'https://api.forecast.io/forecast/d5bb4142f6d7be37a8aa855e52dd0
 var Meetup = function(meetObj) {
     var self = this;
     self.url = meetObj.event_url;
-    self.name = ko.observable(meetObj.name);
-    self.time = ko.observable(meetObj.time);
-    self.date = ko.computed(function() {
+    self.name = meetObj.name;
+    self.time = meetObj.time;
+    self.date = function() {
         return new Date(meetObj.time)
-    });
+    };
 
     self.lat = meetObj.venue.lat;
     self.lng = meetObj.venue.lon;
     self.venueName = meetObj.venue.name;
-    self.address = ko.observable((meetObj.venue.address_1));
-    self.city = ko.observable((meetObj.venue.city));
+    self.address = meetObj.venue.address_1;
+    self.city = meetObj.venue.city;
     self.state = meetObj.venue.state;
     self.marker = new google.maps.Marker({
         position: {
@@ -27,7 +27,7 @@ var Meetup = function(meetObj) {
             lng: self.lng
         },
         icon: 'icon.png',
-        title: self.name()
+        title: self.name
     });
     self.infoWindow = new google.maps.InfoWindow();
     self.weather = ko.observable();
@@ -129,12 +129,12 @@ var ViewModel = function() {
 
         meetup.infoWindow.setContent('<div' +
             '<h5><a href="' +
-            meetup.url + '" target="_blank">' + meetup.name() +
+            meetup.url + '" target="_blank">' + meetup.name +
             '</a> </h5>' +
             '<p>' +
-            meetup.address() + ', ' + meetup.city() + ' </br> Time: ' + meetup.date() +
+            meetup.address + ', ' + meetup.city + ' </br> Time: ' + meetup.date() +
             '</p>' +
-             '<p>' + meetup.weather().summary + '; ' + '</p>' +
+             '<p>' + meetup.weather().summary + '</p>' +
             '</div>'
         );
 
@@ -145,7 +145,7 @@ var ViewModel = function() {
     self.weatherRequest = function(meetup){
 
         var weatherApiLocal = weatherApi + meetup.lat +
-                                ',' + meetup.lng + ',' + (meetup.time()/1000) ;
+                                ',' + meetup.lng + ',' + (meetup.time/1000) ;
 
                                 console.log(weatherApiLocal);
 
