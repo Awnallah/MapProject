@@ -35,7 +35,7 @@ html, body {
     padding: 0;
     overflow: scroll;
     overflow-x: hidden;
-    height: 500px;
+    height: 96vh;
 
 }
 
@@ -53,8 +53,8 @@ html, body {
 
 }
 
-.controls .input-group-description {
-  display: inline-block;
+.radius {
+  width: 50px;
 }
 
 @media (max-width: 770px) {
@@ -69,6 +69,7 @@ html, body {
   }
   .list-item{
     width: 100vw;
+    padding:0 25px;
   }
 
 }

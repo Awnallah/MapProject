@@ -1,7 +1,7 @@
 //custom meetup url search with api key
 var url = 'https://api.meetup.com/2/open_events?and_text=False&offset=0&format=json&lon=-122.25851&limited_events=False&photo-host=public&text=runing+run+jogging+hiking&page=20&radius=15&category=9&lat=37.806349&status=upcoming&desc=False&sig_id=185474821&sig=774927aef4ea1cb19313b3f41dde24adc6966d05';
 
-var newurl ='https://api.meetup.com/2/open_events?&photo-host=public&text=jog+run+hike&category=9&page=20&status=upcoming&desc=False&key=92473e3d65402c53a67252350&&sign=true&country=US&&radius=15&order=distance&key=92473e3d65402c53a67252350';
+var newurl ='https://api.meetup.com/2/open_events?&photo-host=public&text=jog+run+hike&category=9&page=20&status=upcoming&desc=False&key=92473e3d65402c53a67252350&&sign=true&country=US&order=distance&key=92473e3d65402c53a67252350';
 
 var weatherApi = 'https://api.forecast.io/forecast/d5bb4142f6d7be37a8aa855e52dd0f31/';
 
@@ -43,8 +43,11 @@ var ViewModel = function() {
 
     //map variable will be instantiated from Map class and is used for all markers
     var map;
+    var currentLat = 37.806112;
+    var currentLng = -122.258038;
 
     self.searchValue = ko.observable("Berkeley, CA");
+    self.searchRadius = ko.observable(15);
 
 
     // var infoWindow = new google.maps.InfoWindow();
@@ -126,6 +129,12 @@ var ViewModel = function() {
 
         meetup.marker.setAnimation(google.maps.Animation.BOUNCE);
 
+        if( meetup.weather().summary && meetup.weather().apparentTemperature){
+
+        var weatherInDOM = '<p> Expected Weather: <i>' + meetup.weather().summary + ' with Temp of ' + meetup.weather().apparentTemperature   +
+            ' &deg;  F </i></p>'
+        } else
+             var weatherInDOM = 'No Weather Data';
 
         meetup.infoWindow.setContent('<div' +
             '<h5><a href="' +
@@ -133,12 +142,14 @@ var ViewModel = function() {
             '</a> </h5>' +
             '<p>' +
             meetup.address + ', ' + meetup.city + ' </br> Time: ' + meetup.date() +
-            '</p>' +
-             '<p> Expected Weather: <i>' + meetup.weather().summary + '</i></p>' +
-            '</div>'
+            '</p>' + weatherInDOM  +    '</div>'
         );
 
         meetup.infoWindow.open(map, meetup.marker);
+        google.maps.event.addListener(meetup.infoWindow, 'closeclick', function() {
+            meetup.marker.setAnimation(null);
+        });
+
     }
 
 
@@ -162,8 +173,8 @@ var ViewModel = function() {
 
             },
             error: function(weatherData){
-                weatherStatus.summary = 'weather forecast is not available yet';
-                weatherStatus.icon = '';
+                meetup.weather('');
+
             }
         });
 
@@ -173,8 +184,8 @@ var ViewModel = function() {
     self.initMap = function() {
         map = new google.maps.Map(document.getElementById('map'), {
             center: {
-                lat: 37.806112,
-                lng: -122.258038
+                lat: currentLat,
+                lng: currentLng
             },
             zoom: 12,
             styles: [{
@@ -191,23 +202,37 @@ var ViewModel = function() {
             disableDoubleClickZoom: false
         });
 
+    }
+
+    self.newSearch = function(){
+
         var input = document.getElementById('inputSearch');
         var searchBox = new google.maps.places.SearchBox(input);
 
-        searchBox.addListener('places_changed', function() {
+        searchBox.addListener('places_changed', applySearch);
+
+
+        function applySearch(){
 
             var places = searchBox.getPlaces();
-            var lat = places[0].geometry.location.lat();
-            var lng = places[0].geometry.location.lng();
+            currentLat = places[0].geometry.location.lat();
+            currentLng = places[0].geometry.location.lng();
 
 
-           console.log(lat, lng);
-           map.setCenter({lat: lat , lng: lng});
+           map.setCenter({lat: currentLat , lng: currentLng});
 
-           self.getMeetups(newurl + '&lat=' + lat + '&lon=' +lng)
+           self.getMeetups(newurl + '&lat=' + currentLat + '&lon=' + currentLng +'&radius=' + self.searchRadius())
 
-        });
 
+        }
+
+
+    }
+
+    self.radiusFilter = function(){
+
+         var customRequestURL = newurl + '&lat=' + currentLat + '&lon=' + currentLng +'&radius=' + self.searchRadius();
+         self.getMeetups(customRequestURL);
 
     }
 
@@ -216,6 +241,7 @@ var ViewModel = function() {
 
     self.initMap();
     self.getMeetups(url);
+    self.newSearch();
 
 
 }

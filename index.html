@@ -20,8 +20,9 @@
         <div class='container-search input-group-addon'>
              <form id='formSearch' role ='form'>
                 <div> Location
-                    <input data-bind="value: searchValue" name='search' id='inputSearch' type="search" placeholder='Location'>
-                    <button type="button" ><span class="glyphicon glyphicon-search"></span></button>
+                    <input data-bind="value: searchValue" name='search' id='inputSearch' type="search" placeholder='Berkeley, CA'>
+                    Radius <input class="radius" data-bind='value: searchRadius'> (Miles)
+                    <button type="button" id='button' data-bind='click: radiusFilter' ><span class="glyphicon glyphicon-search"></span></button>
                 </div>
             </form>
             <div ><span data-bind='text: meetupList().length'></span> Events</div>
