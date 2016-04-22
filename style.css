@@ -1,7 +1,5 @@
 html, body {
         height: 100%;
-        margin: 0;
-        padding: 0;
         overflow-x: hidden;
       }
 
@@ -26,26 +24,38 @@ html, body {
   z-index: 100;
   top: 0;
   right: 0;
-  padding: 0;
+  padding-right: 0;
+
 }
 
 .list {
     list-style-type: none;
     width: 300px;
-    padding: 0;
     overflow: scroll;
     overflow-x: hidden;
     height: 96vh;
 
 }
 
+.list::-webkit-scrollbar{
+  width: 12px;
+  overflow: visible;
+
+}
+.list::-webkit-scrollbar-thumb{
+  background-color: darkslategrey;
+
+}
+.list::-webkit-scrollbar-thumb:hover{
+  background-color: #000000;
+
+}
+
+
 .list-item{
-
-    border-color: grey;
-    border-style: ridge;
     background-color: grey;
-    width: 280px;
-
+    width: 300px;
+    
 }
 
 .list-item:hover{
@@ -73,3 +83,4 @@ html, body {
   }
 
 }
+

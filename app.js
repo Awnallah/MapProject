@@ -1,7 +1,7 @@
 //custom meetup url search with api key
 var url = 'https://api.meetup.com/2/open_events?and_text=False&offset=0&format=json&lon=-122.25851&limited_events=False&photo-host=public&text=runing+run+jogging+hiking&page=20&radius=15&category=9&lat=37.806349&status=upcoming&desc=False&sig_id=185474821&sig=774927aef4ea1cb19313b3f41dde24adc6966d05';
 
-var newurl ='https://api.meetup.com/2/open_events?&photo-host=public&text=jog+run+hike&category=9&page=20&status=upcoming&desc=False&key=92473e3d65402c53a67252350&&sign=true&country=US&order=distance&key=92473e3d65402c53a67252350';
+var newurl ='https://api.meetup.com/2/open_events?&photo-host=public&text=jog+run+hike&category=9&page=20&status=upcoming&desc=False&key=92473e3d65402c53a67252350&&sign=true&country=US&key=92473e3d65402c53a67252350';
 
 var weatherApi = 'https://api.forecast.io/forecast/d5bb4142f6d7be37a8aa855e52dd0f31/';
 
@@ -75,7 +75,7 @@ var ViewModel = function() {
             cache: false,
 
             // when api request succeeds
-        }).success(function(response) {
+        success: function(response) {
             // extract data from JSON
             var dataArray = response.results;
 
@@ -109,11 +109,18 @@ var ViewModel = function() {
 
             }
 
+            $('#search-status').text('');
+
+            },
+
 
 
             // If the meetup data fails to load, the user is notified
-        }).fail(function(error) {
-            $('#search-status').text('Meetup data could not be loaded');
+        error: function(error) {
+             $('#search-status').text('(Meetup data could not be loaded)');
+
+        }
+
         });
     }
 
@@ -134,7 +141,7 @@ var ViewModel = function() {
         var weatherInDOM = '<p> Expected Weather: <i>' + meetup.weather().summary + ' with Temp of ' + meetup.weather().apparentTemperature   +
             ' &deg;  F </i></p>'
         } else
-             var weatherInDOM = 'No Weather Data';
+             var weatherInDOM = 'Weather forecast is not available yet';
 
         meetup.infoWindow.setContent('<div' +
             '<h5><a href="' +
@@ -153,12 +160,14 @@ var ViewModel = function() {
     }
 
 
+
+
     self.weatherRequest = function(meetup){
 
         var weatherApiLocal = weatherApi + meetup.lat +
                                 ',' + meetup.lng + ',' + (meetup.time/1000) ;
 
-                                console.log(weatherApiLocal);
+
 
         $.ajax({
             url: weatherApiLocal,
@@ -168,7 +177,7 @@ var ViewModel = function() {
                 var forecastdata = weatherData.currently;
 
                 meetup.weather(forecastdata);
-                console.log(meetup.weather());
+
 
 
             },
@@ -179,6 +188,8 @@ var ViewModel = function() {
         });
 
     }
+
+
 
     //google map taken form google reference
     self.initMap = function() {
@@ -232,6 +243,7 @@ var ViewModel = function() {
     self.radiusFilter = function(){
 
          var customRequestURL = newurl + '&lat=' + currentLat + '&lon=' + currentLng +'&radius=' + self.searchRadius();
+         console.log(customRequestURL);
          self.getMeetups(customRequestURL);
 
     }
