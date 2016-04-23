@@ -1,0 +1,86 @@
+html, body {
+        height: 100%;
+        overflow-x: hidden;
+      }
+
+#map {
+  height: 100%;
+  width: 100%;
+}
+
+.container-search {
+  width: auto;
+  position: absolute;
+  z-index: 100;
+  top: 5px;
+  padding: 0 5px;
+
+}
+
+.meetup-list {
+  color: white;
+  width: 300px;
+  position: absolute;
+  z-index: 100;
+  top: 0;
+  right: 0;
+  padding-right: 0;
+
+}
+
+.list {
+    list-style-type: none;
+    width: 300px;
+    overflow: scroll;
+    overflow-x: hidden;
+    height: 96vh;
+
+}
+
+.list::-webkit-scrollbar{
+  width: 12px;
+  overflow: visible;
+
+}
+.list::-webkit-scrollbar-thumb{
+  background-color: darkslategrey;
+
+}
+.list::-webkit-scrollbar-thumb:hover{
+  background-color: #000000;
+
+}
+
+
+.list-item{
+    background-color: grey;
+    width: 300px;
+    
+}
+
+.list-item:hover{
+  font-weight: bold;
+
+}
+
+.radius {
+  width: 50px;
+}
+
+@media (max-width: 770px) {
+  .meetup-list{
+    top: 70vh;
+    width: 100vw;
+  }
+  .list{
+    height: 28vh;
+    bottom: 0;
+    width: 100vw;
+  }
+  .list-item{
+    width: 100vw;
+    padding:0 25px;
+  }
+
+}
+
