@@ -26,7 +26,7 @@ var Meetup = function(meetObj) {
             lat: self.lat,
             lng: self.lng
         },
-        icon: 'src/icon.png',
+        icon: 'dist/icon.png',
         title: self.name
     });
     self.infoWindow = new google.maps.InfoWindow();
