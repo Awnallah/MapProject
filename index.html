@@ -1,56 +1,38 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
-    <title>Running the World</title>
-   <!--  image source : http://www.flaticon.com/free-icon/running-man_1614#term=jogging&page=1&position=8 -->
+    <title>Running the World!</title>
+    <!--  image source : http://www.flaticon.com/free-icon/running-man_1614#term=jogging&page=1&position=8 -->
     <link rel="shortcut icon" href="dist/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="dist/style.css">
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwKDUFHFfvYk-tZXMdmL0JuOsfbUY94aY&libraries=places"
-         ></script>
-
-
-
-
-  </head>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwKDUFHFfvYk-tZXMdmL0JuOsfbUY94aY&libraries=places"></script>
+</head>
 
 <body>
-
-        <div id='map'></div>
-        <div class='container-search input-group-addon'>
-             <form id='formSearch' role ='form'>
-                <div> Location
-                    <input data-bind="value: searchValue" name='search' id='inputSearch' type="search" placeholder='Berkeley, CA'>
-                    Radius <input class="radius" data-bind='value: searchRadius'> (Miles)
-                    <button type="button" id='button' data-bind='click: radiusFilter' ><span class="glyphicon glyphicon-search"></span></button>
-                </div>
-            </form>
-            <div><span data-bind='text: meetupList().length'></span> Events <span id='search-status'></span></div>
-
-        </div>
-
-        <div class="meetup-list">
-            <ul id='list' class="list list-group" data-bind='foreach: {data: meetupList(), as: "meetup"}'>
-                <li class="list-item list-group-item" data-bind='text: meetup.name, click: $root.meetupClicked'></li>
-            </ul>
-        </div>
-
-
-
-
-
-
-
-
+    <div id='map'></div>
+    <div class='container-search input-group-addon'>
+        <form id='formSearch' role='form'>
+            <div> Location
+                <input data-bind="value: searchValue" name='search' id='inputSearch' type="search" placeholder='Berkeley, CA'> Radius
+                <input class="radius" data-bind='value: searchRadius'> (Miles)
+                <button type="button" id='button' data-bind='click: radiusFilter'><span class="glyphicon glyphicon-search"></span></button>
+            </div>
+        </form>
+        <div><span data-bind='text: meetupList().length'></span> Events <span id='search-status'></span></div>
+    </div>
+    <div class="meetup-list">
+        <ul id='list' class="list list-group" data-bind='foreach: {data: meetupList(), as: "meetup"}'>
+            <li class="list-item list-group-item" data-bind='text: meetup.name, click: $root.meetupClicked'></li>
+        </ul>
+    </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js'></script>
     <script type="text/javascript" src='dist/app.js'></script>
-
-
-
-
 </body>
+
 </html>
