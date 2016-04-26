@@ -16,13 +16,16 @@
     <div id='map'></div>
     <div class='container-search input-group-addon' id='inputDiv'>
         <form id='formSearch' role='form'>
-            <div> Location
+            <div>
+                <input type='search' placeholder='search for event' data-bind='value: inputFilter'>
+                <button data-bind='click: filter'>submit</button>
+             Location
                 <input data-bind="value: searchValue" name='search' id='inputSearch' type="search" placeholder='Berkeley, CA'> Radius
                 <input class="radius" data-bind='value: searchRadius'> (Miles)
                 <button type="button" id='button' data-bind='click: radiusFilter'><span class="glyphicon glyphicon-search"></span></button>
             </div>
         </form>
-        <div><span data-bind='text: meetupList().length'></span> Events <span id='search-status'></span></div>
+        <div><span data-bind='text: meetupListFiltered().length'></span> Events <span id='search-status'></span></div>
     </div>
 <!--     <div class="meetup-list" id="meetup-List">
     <ul id='list' class="list list-group" data-bind='foreach: {data: meetupList(), as: "meetup"}'>
@@ -31,7 +34,7 @@
 </div> -->
 
     <div class="meetup-list" id="meetup-List">
-        <ul id='list' class="list list-group" data-bind='foreach: {data: filteredList(), as: "meetup"}'>
+        <ul id='list' class="list list-group" data-bind='foreach: {data: meetupListFiltered(), as: "meetup"}'>
             <li class="list-item list-group-item" data-bind='text: meetup.name, click: $root.meetupClicked'></li>
         </ul>
     </div>

@@ -59,7 +59,8 @@ var ViewModel = function() {
     //initial search parameters (editable by the user)
     self.searchValue = ko.observable("Berkeley, CA");
     self.searchRadius = ko.observable(15);
-    self.inputFilter = ko.observable('saturday');
+    self.inputFilter = ko.observable('');
+    self.meetupListFiltered =ko.observableArray([]);
 
 
     // Stores and displayes meetup objects
@@ -101,23 +102,9 @@ var ViewModel = function() {
                     }
                 }
 
-                //For every meetup object in the self.meetupList()
-                for (var i = 0; i < self.meetupList().length; i++) {
-                    //set each marker on map
-                    //request weather data for the location time of the object
-                    self.meetupList()[i].marker.setMap(map);
-                    self.weatherRequest(self.meetupList()[i]);
+                self.filter();
 
-                    //IFFE: adds a listener to each marker, so when a marker is clicked, the
-                    //function self.meetupClicked is invoked
-                    (function(j) {
 
-                        self.meetupList()[j].marker.addListener('click', function() {
-                            self.meetupClicked(self.meetupList()[j]);
-                        });
-                    }(i))
-
-                }
 
                 //The error message is cleared when a succeful request is achieved after a failed request
                 $('#search-status').text('');
@@ -136,37 +123,75 @@ var ViewModel = function() {
     }
 
 
-    self.filteredList = ko.computed(function(){
-        self.meetupList().forEach(function(meetup) {
-          meetup.marker.setMap(null);
+    self.filter = function(){
+
+        self.meetupListFiltered().forEach(function(meetup) {
+            meetup.marker.setMap(null);
         });
+        self.meetupListFiltered([]);
 
         // filter results where name contains se
-        var results = ko.utils.arrayFilter(self.meetupList(), function(meetup) {
-          return meetup.name.toLowerCase().contains(self.inputFilter().toLowerCase());
+        var results = self.meetupList().filter(function(meetup){
+            return (meetup.name.toLowerCase().indexOf(self.inputFilter().toLowerCase()) != -1)
+        });
+
+        results.forEach(function(meetup){
+            self.meetupListFiltered.push(meetup)
+
         });
 
 
         //go through results and set marker to visible
-        results.forEach(function(meetup) {
-          console.log(meetup.name);
-        });
+        //
 
-        return results
 
+
+        self.addMarkers();
+
+        }
+
+    self.addMarkers = function (){
+
+
+                //For every meetup object in the self.meetupList()
+        for (var i = 0; i < self.meetupListFiltered().length; i++) {
+            //set each marker on map
+            //request weather data for the location time of the object
+            self.meetupListFiltered()[i].marker.setMap(map);
+            self.weatherRequest(self.meetupListFiltered()[i]);
+
+            //IFFE: adds a listener to each marker, so when a marker is clicked, the
+            //function self.meetupClicked is invoked
+            // (function(j) {
+
+            //     self.meetupListFiltered()[j].marker.addListener('click', function() {
+            //         self.meetupClicked(self.meetupListFiltered()[j]);
+            //     });
+            // }(i));
+
+        }
+
+        self.meetupListFiltered().forEach(function(meetup){
+            meetup.marker.addListener('click', function(){
+                self.meetupClicked(meetup);
+            })
         })
+    }
 
     //self.meetupClicked is invoked once a marker or meetupList item is clicked on window
     //infoWindow content is set in this function
     self.meetupClicked = function(meetup) {
         //closes any open infoWidow to avoid multiple ones openning simultaneously
-        self.meetupList().forEach(function(meetup) {
+        self.meetupListFiltered().forEach(function(meetup) {
             meetup.infoWindow.close();
             meetup.marker.setAnimation(null);
         })
 
-        //marker bounces
+       // marker bounces
         meetup.marker.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(function(){
+            meetup.marker.setAnimation(null);
+        }, 2100)
 
         //if weather data are valid, they're included in the infoWindow. An error is given otherwise
 
@@ -311,7 +336,6 @@ var ViewModel = function() {
     // self.newSearch is fired to add a listener for location change
     self.newSearch();
 
-    console.log(self.filteredList());
 
     //end of ViewModel
 }
