@@ -8,6 +8,12 @@ var customMeetupUrl = 'https://api.meetup.com/2/open_events?&photo-host=public&t
 
 var weatherApi = 'https://api.forecast.io/forecast/d5bb4142f6d7be37a8aa855e52dd0f31/';
 
+
+String.prototype.contains = function(other) {
+  return this.indexOf(other) !== -1;
+};
+
+
 //Meetup Class takes meetup api data and forms custom objects for each meetup event
 //wheather data is assigned to each object later by weatherRequest function
 var Meetup = function(meetObj) {
@@ -42,6 +48,7 @@ var Meetup = function(meetObj) {
 
 //Kockout framework
 var ViewModel = function() {
+
     var self = this;
 
     //map variable will be instantiated from Map class and is used for all markers
@@ -52,6 +59,7 @@ var ViewModel = function() {
     //initial search parameters (editable by the user)
     self.searchValue = ko.observable("Berkeley, CA");
     self.searchRadius = ko.observable(15);
+    self.inputFilter = ko.observable('saturday');
 
 
     // Stores and displayes meetup objects
@@ -128,6 +136,25 @@ var ViewModel = function() {
     }
 
 
+    self.filteredList = ko.computed(function(){
+        self.meetupList().forEach(function(meetup) {
+          meetup.marker.setMap(null);
+        });
+
+        // filter results where name contains se
+        var results = ko.utils.arrayFilter(self.meetupList(), function(meetup) {
+          return meetup.name.toLowerCase().contains(self.inputFilter().toLowerCase());
+        });
+
+
+        //go through results and set marker to visible
+        results.forEach(function(meetup) {
+          console.log(meetup.name);
+        });
+
+        return results
+
+        })
 
     //self.meetupClicked is invoked once a marker or meetupList item is clicked on window
     //infoWindow content is set in this function
@@ -212,8 +239,8 @@ var ViewModel = function() {
     self.initMap = function() {
         map = new google.maps.Map(document.getElementById('map'), {
             center: {
-                lat: currentLat,
-                lng: currentLng
+                lat: 37.806112,
+                lng: -122.258038
             },
             zoom: 11,
             styles: [{
@@ -280,11 +307,18 @@ var ViewModel = function() {
 
     self.initMap();
     self.getMeetups(singedMeetupUrl);
+
     // self.newSearch is fired to add a listener for location change
     self.newSearch();
 
+    console.log(self.filteredList());
 
+    //end of ViewModel
 }
 
 
-ko.applyBindings(new ViewModel());
+
+function initViewModel(){
+    ko.applyBindings(new ViewModel());
+}
+
