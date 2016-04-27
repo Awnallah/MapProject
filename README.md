@@ -11,6 +11,12 @@ and expected weather are shown in the infoWindow when a marker or list item is s
 ##Link:
 [Let's Run](http://awnallah.github.io/MapProject/)
 
+##How to Use:
+1. Use the provided line. Alternatively, download or fork the application from https://github.com/Awnallah/MapProject
+2. Open index.html to start the application.
+3. Use filer box to filter list items and map markers.
+4. The Advanced Search button allows you to specify a new location and radius.
+5. Select a list item or a map marker to open an info-window describing the marker.
 
 ##Resources: 
 - Knockout JS
