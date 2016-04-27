@@ -1,9 +1,11 @@
+
+
 html, body {
         height: 100%;
         overflow-x: hidden;
       }
 
-#map {
+.mapCanvas {
   height: 100%;
   width: 100%;
 }
@@ -14,7 +16,12 @@ html, body {
   z-index: 100;
   top: 5px;
   padding: 0 5px;
+    max-width: 380px;
 
+}
+
+.searchInput {
+    width: 120px
 }
 
 .meetup-list {
@@ -22,9 +29,10 @@ html, body {
   width: 300px;
   position: absolute;
   z-index: 100;
-  top: 0;
+  bottom: 0;
   right: 0;
-  padding-right: 0;
+  padding: 0;
+    margin: 0;
 
 }
 
@@ -33,12 +41,12 @@ html, body {
     width: 300px;
     overflow: scroll;
     overflow-x: hidden;
-    height: 96vh;
+    max-height: 90vh;
 
 }
 
 .list::-webkit-scrollbar{
-  width: 12px;
+  width: 8px;
   overflow: visible;
 
 }
@@ -55,7 +63,12 @@ html, body {
 .list-item{
     background-color: grey;
     width: 300px;
-    
+    margin: 0;
+
+}
+
+.list-item:last-child {
+
 }
 
 .list-item:hover{
@@ -64,22 +77,34 @@ html, body {
 }
 
 .radius {
-  width: 50px;
+  width: 30px;
 }
 
 @media (max-width: 770px) {
   .meetup-list{
-    top: 70vh;
+    bottom: 0;
+      padding: 0;
+      margin: 0;
     width: 100vw;
   }
   .list{
-    height: 28vh;
-    bottom: 0;
+    max-height: 20vh;
     width: 100vw;
+    padding: 0;
+    margin: 0;
   }
   .list-item{
     width: 100vw;
-    padding:0 25px;
+    padding:0 20px;
+    margin:0;
+  }
+
+  .container-search {
+    max-width: 100vw;
+  }
+
+  .searchInput{
+    width: 96px;
   }
 
 }

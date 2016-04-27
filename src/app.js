@@ -9,9 +9,6 @@ var customMeetupUrl = 'https://api.meetup.com/2/open_events?&photo-host=public&t
 var weatherApi = 'https://api.forecast.io/forecast/d5bb4142f6d7be37a8aa855e52dd0f31/';
 
 
-String.prototype.contains = function(other) {
-  return this.indexOf(other) !== -1;
-};
 
 
 //Meetup Class takes meetup api data and forms custom objects for each meetup event
@@ -21,7 +18,7 @@ var Meetup = function(meetObj) {
     this.name = meetObj.name;
     this.time = meetObj.time;
     this.date = function() {
-        return new Date(meetObj.time)
+        return new Date(meetObj.time);
     };
 
     this.lat = meetObj.venue.lat;
@@ -60,11 +57,12 @@ var ViewModel = function() {
     self.searchValue = ko.observable("Berkeley, CA");
     self.searchRadius = ko.observable(15);
     self.inputFilter = ko.observable('');
-    self.meetupListFiltered =ko.observableArray([]);
 
 
-    // Stores and displayes meetup objects
+    // Stores initial Search results
     self.meetupList = ko.observableArray([]);
+    // displays filterd Search results
+    self.meetupListFiltered = ko.observableArray([]);
 
     //When a new search is initiated, the markers are removed and the list of meetup
     //objects is cleared
@@ -73,7 +71,7 @@ var ViewModel = function() {
             meetup.marker.setMap(null);
         });
         self.meetupList([]);
-    }
+    };
 
 
     self.getMeetups = function(url) {
@@ -87,10 +85,11 @@ var ViewModel = function() {
             timeout: 5000,
             contentType: "application/json",
             dataType: "jsonp",
-            cache: false,
+            cache: false
+        }).done(
 
             // when api request succeeds
-            success: function(response) {
+            function(response) {
 
                 var dataArray = response.results;
 
@@ -109,74 +108,63 @@ var ViewModel = function() {
                 //The error message is cleared when a succeful request is achieved after a failed request
                 $('#search-status').text('');
 
-            },
+            }).fail(
 
 
 
             // If the meetup request fails, the user is notified
-            error: function(error) {
+                function(error) {
                 $('#search-status').text('(Meetup data could not be loaded)');
 
-            }
-
-        });
-    }
+            });
 
 
-    self.filter = function(){
+    };
 
+    // filter self.meetupList and populate self.meetupListFiltered using input filter string
+    self.filter = function() {
+
+        //clear results from previous filter
         self.meetupListFiltered().forEach(function(meetup) {
             meetup.marker.setMap(null);
         });
         self.meetupListFiltered([]);
 
-        // filter results where name contains se
-        var results = self.meetupList().filter(function(meetup){
-            return (meetup.name.toLowerCase().indexOf(self.inputFilter().toLowerCase()) != -1)
+        // filter event names by input filter
+        var results = self.meetupList().filter(function(meetup) {
+            return (meetup.name.toLowerCase().indexOf(self.inputFilter().toLowerCase()) != -1);
         });
 
-        results.forEach(function(meetup){
-            self.meetupListFiltered.push(meetup)
+        results.forEach(function(meetup) {
+            self.meetupListFiltered.push(meetup);
 
         });
 
 
         //go through results and set marker to visible
-        //
-
-
-
         self.addMarkers();
 
-        }
+    }
 
-    self.addMarkers = function (){
+    self.addMarkers = function() {
 
 
-                //For every meetup object in the self.meetupList()
+        //For every meetup object in the self.meetupListFiltered()
         for (var i = 0; i < self.meetupListFiltered().length; i++) {
             //set each marker on map
-            //request weather data for the location time of the object
+            //request weather data for the location and time of the object
             self.meetupListFiltered()[i].marker.setMap(map);
             self.weatherRequest(self.meetupListFiltered()[i]);
 
-            //IFFE: adds a listener to each marker, so when a marker is clicked, the
-            //function self.meetupClicked is invoked
-            // (function(j) {
-
-            //     self.meetupListFiltered()[j].marker.addListener('click', function() {
-            //         self.meetupClicked(self.meetupListFiltered()[j]);
-            //     });
-            // }(i));
-
         }
 
-        self.meetupListFiltered().forEach(function(meetup){
-            meetup.marker.addListener('click', function(){
+        //add a listener for each marker
+        self.meetupListFiltered().forEach(function(meetup) {
+            meetup.marker.addListener('click', function() {
                 self.meetupClicked(meetup);
-            })
-        })
-    }
+            });
+        });
+    };
 
     //self.meetupClicked is invoked once a marker or meetupList item is clicked on window
     //infoWindow content is set in this function
@@ -185,26 +173,27 @@ var ViewModel = function() {
         self.meetupListFiltered().forEach(function(meetup) {
             meetup.infoWindow.close();
             meetup.marker.setAnimation(null);
-        })
+        });
 
-       // marker bounces
+        // marker bounces for 1.4 sec
         meetup.marker.setAnimation(google.maps.Animation.BOUNCE);
-        setTimeout(function(){
+        setTimeout(function() {
             meetup.marker.setAnimation(null);
-        }, 2100)
+        }, 1400);
 
-        //if weather data are valid, they're included in the infoWindow. An error is given otherwise
+        //if weather data are valid, they're included in the infoWindow. An saved string is given otherwise
 
         if (meetup.weather.summary && meetup.weather.apparentTemperature) {
 
             var weatherInDOM = '<p> Expected Weather: <i>' + meetup.weather.summary + ' with Temp of ' + meetup.weather.apparentTemperature +
-                ' &deg;  F </i></p>'
-        } else
+                ' &deg;  F </i></p>';
+        } else {
             var weatherInDOM = 'Weather forecast is not available yet';
+        }
 
 
         //info window content is set from the clicked meetup object
-        meetup.infoWindow.setContent('<div' +
+        meetup.infoWindow.setContent('<div class="infoWindow"' +
             '<h5><a href="' +
             meetup.url + '" target="_blank">' + meetup.name +
             '</a> </h5>' +
@@ -216,12 +205,15 @@ var ViewModel = function() {
 
         meetup.infoWindow.open(map, meetup.marker);
 
+        // recenters the map to the selected meetup event (useful for mobile size)
+        map.setCenter({lat: meetup.lat, lng: meetup.lng});
+
         //Marker bouncing ends once an infoWindow is closed
         google.maps.event.addListener(meetup.infoWindow, 'closeclick', function() {
             meetup.marker.setAnimation(null);
         });
 
-    }
+    };
 
 
 
@@ -238,8 +230,8 @@ var ViewModel = function() {
         $.ajax({
             url: weatherApiLocal,
             dataType: 'jsonp',
-            timeout: 3000,
-            success: function(weatherData) {
+            timeout: 3000
+        }).done( function(weatherData) {
 
                 var forecastdata = weatherData.currently;
 
@@ -248,15 +240,14 @@ var ViewModel = function() {
 
 
 
-            },
-            error: function(weatherData) {
+            }).fail(function(weatherData) {
                 //request fails --> weather data is empty object
                 meetup.weather = {};
 
-            }
-        });
+            });
 
-    }
+
+    };
 
 
 
@@ -282,7 +273,7 @@ var ViewModel = function() {
             disableDoubleClickZoom: false
         });
 
-    }
+    };
 
     //self.newSearch function is fired when a new location is requested in the view
     self.newSearch = function() {
@@ -306,13 +297,13 @@ var ViewModel = function() {
             map.setCenter({ lat: currentLat, lng: currentLng });
 
             //new custom request is fired (locaton)
-            self.getMeetups(customMeetupUrl + '&lat=' + currentLat + '&lon=' + currentLng + '&radius=' + self.searchRadius())
+            self.getMeetups(customMeetupUrl + '&lat=' + currentLat + '&lon=' + currentLng + '&radius=' + self.searchRadius());
 
 
         }
 
 
-    }
+    };
 
     //self.radiusFilter is fired when the search button is clicked
     self.radiusFilter = function() {
@@ -325,7 +316,7 @@ var ViewModel = function() {
             alert('The Search Radius Must Be A Number!');
         }
 
-    }
+    };
 
 
     //map inititated first, then meetup data are loaded
@@ -338,11 +329,10 @@ var ViewModel = function() {
 
 
     //end of ViewModel
-}
+};
 
 
 
-function initViewModel(){
+function initViewModel() {
     ko.applyBindings(new ViewModel());
 }
-
