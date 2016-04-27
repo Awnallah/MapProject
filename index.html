@@ -8,7 +8,7 @@
     <!--  image source : http://www.flaticon.com/free-icon/running-man_1614#term=jogging&page=1&position=8 -->
     <link rel="shortcut icon" href="dist/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <link rel="stylesheet" href="src/style.css">
+    <link rel="stylesheet" href="dist/style.css">
 
 </head>
 
@@ -21,7 +21,7 @@
             <button data-bind='click: filter'>filter</button>
             <button data-toggle='collapse' type='button' data-target='#advancedSearch' class='btn-primary'> Advanced Search </button>
             <div class='collapse' id='advancedSearch'>
-                    Location
+                Location
                 <input data-bind="value: searchValue" name='search' id='inputSearch' type="search" placeholder='Berkeley, CA' class="searchInput"> Radius
                 <input class="radius" data-bind='value: searchRadius'> (Miles)
                 <button type="button" id='button' data-bind='click: radiusFilter'><span class="glyphicon glyphicon-search"></span></button>
@@ -41,18 +41,16 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script type="text/javascript">
         function mapError() {
-            //alert('Google maps failed to load');
 
             $('#inputDiv').append("<h4 class='bg-danger'>Google maps failed to load</h4>");
         }
-
     </script>
 
 
     <script src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js'></script>
-    <script type="text/javascript" src='src/app.js'></script>
+    <script type="text/javascript" src='dist/app.js'></script>
 
-    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwKDUFHFfvYk-tZXMdmL0JuOsfbUY94aY&libraries=places&callback=initViewModel"onerror="mapError()"></script>
+    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwKDUFHFfvYk-tZXMdmL0JuOsfbUY94aY&libraries=places&callback=initViewModel" onerror="mapError()"></script>
 
 
 

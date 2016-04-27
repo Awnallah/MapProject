@@ -1,6 +1,5 @@
 //Hamzah Awnallah
 //6hamzah6@gmail.com
-
 //custom meetup url search with api key
 var singedMeetupUrl = 'https://api.meetup.com/2/open_events?and_text=False&offset=0&format=json&lon=-122.25851&limited_events=False&photo-host=public&text=runing+run+jogging+hiking&page=20&radius=15&category=9&lat=37.806349&status=upcoming&desc=False&sig_id=185474821&sig=774927aef4ea1cb19313b3f41dde24adc6966d05';
 
@@ -113,7 +112,7 @@ var ViewModel = function() {
 
 
             // If the meetup request fails, the user is notified
-                function(error) {
+            function(error) {
                 $('#search-status').text('(Meetup data could not be loaded)');
 
             });
@@ -144,7 +143,7 @@ var ViewModel = function() {
         //go through results and set marker to visible
         self.addMarkers();
 
-    }
+    };
 
     self.addMarkers = function() {
 
@@ -182,13 +181,13 @@ var ViewModel = function() {
         }, 1400);
 
         //if weather data are valid, they're included in the infoWindow. An saved string is given otherwise
-
+        var weatherInDOM;
         if (meetup.weather.summary && meetup.weather.apparentTemperature) {
 
-            var weatherInDOM = '<p> Expected Weather: <i>' + meetup.weather.summary + ' with Temp of ' + meetup.weather.apparentTemperature +
+            weatherInDOM = '<p> Expected Weather: <i>' + meetup.weather.summary + ' with Temp of ' + meetup.weather.apparentTemperature +
                 ' &deg;  F </i></p>';
         } else {
-            var weatherInDOM = 'Weather forecast is not available yet';
+            weatherInDOM = 'Weather forecast is not available yet';
         }
 
 
@@ -206,7 +205,10 @@ var ViewModel = function() {
         meetup.infoWindow.open(map, meetup.marker);
 
         // recenters the map to the selected meetup event (useful for mobile size)
-        map.setCenter({lat: meetup.lat, lng: meetup.lng});
+        map.setCenter({
+            lat: meetup.lat,
+            lng: meetup.lng
+        });
 
         //Marker bouncing ends once an infoWindow is closed
         google.maps.event.addListener(meetup.infoWindow, 'closeclick', function() {
@@ -231,20 +233,20 @@ var ViewModel = function() {
             url: weatherApiLocal,
             dataType: 'jsonp',
             timeout: 3000
-        }).done( function(weatherData) {
+        }).done(function(weatherData) {
 
-                var forecastdata = weatherData.currently;
+            var forecastdata = weatherData.currently;
 
-                //weather data is stored into the meetup Object
-                meetup.weather = forecastdata;
+            //weather data is stored into the meetup Object
+            meetup.weather = forecastdata;
 
 
 
-            }).fail(function(weatherData) {
-                //request fails --> weather data is empty object
-                meetup.weather = {};
+        }).fail(function(weatherData) {
+            //request fails --> weather data is empty object
+            meetup.weather = {};
 
-            });
+        });
 
 
     };
@@ -294,7 +296,10 @@ var ViewModel = function() {
             currentLng = places[0].geometry.location.lng();
 
 
-            map.setCenter({ lat: currentLat, lng: currentLng });
+            map.setCenter({
+                lat: currentLat,
+                lng: currentLng
+            });
 
             //new custom request is fired (locaton)
             self.getMeetups(customMeetupUrl + '&lat=' + currentLat + '&lon=' + currentLng + '&radius=' + self.searchRadius());
@@ -309,7 +314,7 @@ var ViewModel = function() {
     self.radiusFilter = function() {
 
         // a new custom search is fired when if the radius is a number
-        if (parseInt(self.searchRadius()) == self.searchRadius()) {
+        if (parseInt(self.searchRadius() ) == self.searchRadius()) {
             var customRequestURL = customMeetupUrl + '&lat=' + currentLat + '&lon=' + currentLng + '&radius=' + self.searchRadius();
             self.getMeetups(customRequestURL);
         } else {
