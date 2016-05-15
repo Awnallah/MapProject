@@ -17,7 +17,9 @@ var Meetup = function(meetObj) {
     this.name = meetObj.name;
     this.time = meetObj.time;
     this.date = function() {
-        return new Date(meetObj.time);
+        var saveDate = new Date(meetObj.time);
+        var options = { weekday: 'long', hour:'numeric', year: 'numeric', month: 'long', day: 'numeric'};
+        return saveDate.toLocaleDateString('en-US', options);
     };
 
     this.lat = meetObj.venue.lat;
